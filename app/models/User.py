@@ -7,7 +7,7 @@ from datetime import datetime
 
 from flask_login import UserMixin
 
-from app import db, loginmanager
+from app import db, login_manager
 
 # 用户组织关联表
 user_organization_table = db.Table(
@@ -42,11 +42,11 @@ class User(db.Model, UserMixin):
 
     organizations = db.relationship('Organization',
                                     secondary=user_organization_table,
-                                    backref=db.backref('db_user', lazy='dynamic'),)
+                                    backref=db.backref('db_user', lazy='dynamic'), )
 
     roles = db.relationship('Role',
                             secondary=user_role_table,
-                            backref=db.backref('db_user', lazy='dynamic'),)
+                            backref=db.backref('db_user', lazy='dynamic'), )
 
     def get_id(self):
         return str(self.id)
@@ -73,7 +73,7 @@ class User(db.Model, UserMixin):
             'id': self.id,
             'create_datetime': self.create_time.strftime('%Y-%m-%d %H:%M:%S'),
             'update_datetime': self.update_time.strftime('%Y-%m-%d %H:%M:%S'),
-            'nicknam': self.nickname,
+            'nickname': self.nickname,
             'name': self.name,
             'age': self.age,
             'sex': self.sex,
@@ -81,9 +81,10 @@ class User(db.Model, UserMixin):
             'employdate': self.employ_date.strftime('%Y-%m-%d %H:%M:%S'),
         }
 
+
 # login_manger=LoginManager()
 # login_manager.init_app(app)
-@loginmanager.user_loader
+@login_manager.user_loader
 def load_user(user_id):
     """
     根据user_id查询
@@ -92,5 +93,3 @@ def load_user(user_id):
     """
     return db.session.query(User).filter(User.id == user_id).first()
     # return User.query.filter(User.id == user_id).first()
-
-
