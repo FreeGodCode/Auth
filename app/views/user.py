@@ -60,7 +60,8 @@ def grant_user_organization():
     """
     id = request.form.get('id', '')
     ids = request.form.get('ids', '')
-    user = User.query.get(id)
+    # user = User.query.get(id)
+    user = db.session.query(User).get(id)
 
     if not ids:
         user.organizations = []
@@ -110,9 +111,11 @@ def do_login():
     if user:
         # 密码进行MD5加密
         md = hashlib.md5()
-        encoded_pwd = md.update(request.form['data.pwd'].encode('utf-8')).hexdigest()
+        md.update(request.form['data.pwd'].encode('utf-8'))
+        # encoded_pwd = md.update(request.form['data.pwd'].encode('utf-8')).hexdigest()
         # 加密后的密码和数据库中的密码进行比较
-        if encoded_pwd == user.password:
+        # if encoded_pwd == user.password:
+        if md.hexdigest() == user.password:
             login_user(user)
             return jsonify({'success': True, 'msg': ''})
     return jsonify({'success': False, 'msg': 'password error'})
@@ -146,7 +149,8 @@ def get_user_ById():
 
     :return:
     """
-    user = User.query.get(request.form.get('id'))
+    # user = User.query.get(request.form.get('id'))
+    user = db.session.query(User).get(request.form.get('id'))
     if user:
         return jsonify(user.to_join)
     return jsonify({'success': False, 'msg': 'error' })
@@ -163,7 +167,8 @@ def user_update():
     if User.query.filter(User.nickname == nickname).filter(User.id != id).first():
         return jsonify({'success': False, 'msg': '更新用户失败,用户名已存在'})
 
-    user = User.query.get(id)
+    user = db.session.query(User).get(id)
+    # user = User.query.get(id)
     user.nickname = request.form.get('data.nickname', '')
     user.name = request.form.get('data.name', '')
     user.sex = request.form.get('data.sex', '')
@@ -203,7 +208,8 @@ def user_save():
 
 @base_blueprint.route('/user_delete', methods=['POST'])
 def user_delete():
-    user = User.query.get(request.form.get('id'))
+    # user = User.query.get(request.form.get('id'))
+    user = db.session.query(User).get(request.form.get('id'))
     if user:
         db.session.delete(user)
     return jsonify({'success': True})

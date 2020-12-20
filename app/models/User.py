@@ -7,7 +7,7 @@ from datetime import datetime
 
 from flask_login import UserMixin
 
-from app import db
+from app import db, loginmanager
 
 # 用户组织关联表
 user_organization_table = db.Table(
@@ -81,13 +81,16 @@ class User(db.Model, UserMixin):
             'employdate': self.employ_date.strftime('%Y-%m-%d %H:%M:%S'),
         }
 
-
+# login_manger=LoginManager()
+# login_manager.init_app(app)
+@loginmanager.user_loader
 def load_user(user_id):
     """
     根据user_id查询
     :param user_id:
     :return:
     """
-    return User.query.filter(User.id == user_id).first()
+    return db.session.query(User).filter(User.id == user_id).first()
+    # return User.query.filter(User.id == user_id).first()
 
 

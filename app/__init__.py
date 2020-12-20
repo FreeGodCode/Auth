@@ -20,7 +20,7 @@ bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
 db = SQLAlchemy()
-base_blueprint = Blueprint('base', __name__, url_prefix='/base')
+base_blueprint = Blueprint('base', __name__, url_prefix='/base', template_folder='../templates', static_folder='../static')
 
 
 def create_app(config_name):

@@ -12,7 +12,7 @@ from app import db
 role_resource_table = db.Table(
     'db_role_resource',
     db.metadata,
-    db.Column('role_id', db.String, db.ForeignKey('role.id'))
+    db.Column('role_id', db.String, db.ForeignKey('db_role.id'))
 )
 
 
