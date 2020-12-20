@@ -16,16 +16,16 @@ from app.models.Role import Role
 from app.models.User import User
 
 
-@base_blueprint.route('/login', methods=['GET'])
-def login():
+@base_blueprint.route('user/login', methods=['GET'])
+def user_login():
     """
     登录
     :return:
     """
-    return render_template('login.html')
+    return render_template('user/login.html')
 
 
-@base_blueprint.route('/user_form', methods=['GET'])
+@base_blueprint.route('/user/form', methods=['GET'])
 def user_form():
     """
 
@@ -34,7 +34,7 @@ def user_form():
     return render_template('user/form.html', id=request.args.get('id', ''))
 
 
-@base_blueprint.route('/user_organization_grant', methods=['GET'])
+@base_blueprint.route('/user/grant_user_organization', methods=['GET'])
 def grant_user_organization_page():
     """
 
@@ -43,7 +43,7 @@ def grant_user_organization_page():
     return render_template('user/grant_user_organization.html', id=request.args.get('id', ''))
 
 
-@base_blueprint.route('/user_role_grant', methods=['GET'])
+@base_blueprint.route('/user/grant_user_role', methods=['GET'])
 def grant_user_role_page():
     """
 
@@ -52,7 +52,7 @@ def grant_user_role_page():
     return render_template("user/grant_user_role.html", id=request.args.get('id', ''))
 
 
-@base_blueprint.route('/user_organization', methods=['POST'])
+@base_blueprint.route('/user/organization', methods=['POST'])
 def grant_user_organization():
     """
 
@@ -73,7 +73,7 @@ def grant_user_organization():
     return jsonify({'success': True})
 
 
-@base_blueprint.route('/user_role', methods=['POST'])
+@base_blueprint.route('/user/grant_user_role', methods=['POST'])
 def grant_user_role():
     """
 
@@ -82,8 +82,8 @@ def grant_user_role():
     id = request.form.get('id', '')
     ids = request.form.get('ids', '')
 
-    user = User.query.get(id)
-
+    # user = User.query.get(id)
+    user = db.session.query(User).get(id)
     if not ids:
         user.roles = []
     else:
@@ -94,13 +94,13 @@ def grant_user_role():
     return jsonify({'success': True})
 
 
-@base_blueprint.route('/user_doNotNeedSessionAndSecurity_logout.action', methods=['POST'])
+@base_blueprint.route('/user/do_logout', methods=['POST'])
 def do_logout():
     logout_user()
     return jsonify({'success': True})
 
 
-@base_blueprint.route('/user_doNotNeedSessionAndSecurity_login', methods=['POST'])
+@base_blueprint.route('/user/do_login', methods=['POST'])
 def do_login():
     """
 
@@ -121,7 +121,7 @@ def do_login():
     return jsonify({'success': False, 'msg': 'password error'})
 
 
-@base_blueprint.route('/user', methods=['GET'])
+@base_blueprint.route('/user/', methods=['GET'])
 def user_index():
     """
 
@@ -143,8 +143,8 @@ def user_grid():
     return jsonify([user.to_join() for user in users])
 
 
-@base_blueprint.route('/user_get_by_id', methods=['POST'])
-def get_user_ById():
+@base_blueprint.route('/user/get_user_by_id', methods=['POST'])
+def get_user_by_id():
     """
 
     :return:
@@ -153,10 +153,11 @@ def get_user_ById():
     user = db.session.query(User).get(request.form.get('id'))
     if user:
         return jsonify(user.to_join)
-    return jsonify({'success': False, 'msg': 'error' })
+    # return jsonify({'success': False, 'msg': 'error' })
+    return jsonify({'code': 400, 'msg': 'error'})
 
 
-@base_blueprint.route('/user_update', methods=['POST'])
+@base_blueprint.route('/user/update', methods=['POST'])
 def user_update():
     """
 
@@ -177,10 +178,11 @@ def user_update():
     user.update_time = datetime.now()
 
     db.session.add(user)
-    return jsonify({'success': True, 'msg': '更新成功'})
+    # return jsonify({'success': True, 'msg': '更新成功'})
+    return jsonify({'code': 200, 'msg': '更新成功'})
 
 
-@base_blueprint.route('/user_save', methods=['POST'])
+@base_blueprint.route('/user/save', methods=['POST'])
 def user_save():
     """
 
@@ -203,13 +205,15 @@ def user_save():
     user.img = request.form.get('data.img')
 
     db.session.add(user)
-    return jsonify({"success": True, 'msg': '新建用户成功,默认密码为:123456'})
+    # return jsonify({"success": True, 'msg': '新建用户成功,默认密码为:123456'})
+    return jsonify({"code": 200, 'msg': '新建用户成功,默认密码为:123456'})
 
 
-@base_blueprint.route('/user_delete', methods=['POST'])
+@base_blueprint.route('/user/delete', methods=['POST'])
 def user_delete():
     # user = User.query.get(request.form.get('id'))
     user = db.session.query(User).get(request.form.get('id'))
     if user:
         db.session.delete(user)
-    return jsonify({'success': True})
+    # return jsonify({'success': True})
+    return jsonify({'code': 200, 'msg': 'OK'})

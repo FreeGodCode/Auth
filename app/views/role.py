@@ -24,7 +24,7 @@ def role_index():
     return render_template('role/index.html')
 
 
-@base_blueprint.route('/role_form ', methods=['GET'])
+@base_blueprint.route('/role/form ', methods=['GET'])
 def role_form():
     """
 
@@ -34,7 +34,7 @@ def role_form():
 
 
 
-@base_blueprint.route('/grant_role_page', methods=['GET'])
+@base_blueprint.route('/role/grant_role_page', methods=['GET'])
 def grant_role_page():
     """
 
@@ -43,7 +43,7 @@ def grant_role_page():
     return render_template('role/grant_role.html', id=request.form.get('id', ''))
 
 
-@base_blueprint.route('/get_roles_tree', methods=['POST'])
+@base_blueprint.route('/role/get_roles_tree', methods=['POST'])
 def get_roles_tree():
     """
 
@@ -54,7 +54,7 @@ def get_roles_tree():
     return jsonify([role.to_join() for role in roles])
 
 
-@base_blueprint.route('/get_role_by_userId', methods=['POST'])
+@base_blueprint.route('/role/get_roles_by_userId', methods=['POST'])
 def get_roles_by_userId():
     """
 
@@ -65,7 +65,7 @@ def get_roles_by_userId():
     return jsonify([role.to_join() for role in roles])
 
 
-@base_blueprint.route('/grant_role', methods=['POST'])
+@base_blueprint.route('/role/grant_role', methods=['POST'])
 def grant_role():
     """
 
@@ -85,7 +85,8 @@ def grant_role():
         role.resources = [db.session.query(Resource).get(r_id) for r_id in id_list]
 
     db.session.add(role)
-    return jsonify({'success': True})
+    # return jsonify({'success': True})
+    return jsonify({'code': 200, 'msg': 'OK'})
 
 
 @base_blueprint.route('/role_grid', methods=['POST'])
@@ -103,7 +104,7 @@ def role_grid():
     return jsonify([role.to_join() for role in roles])
 
 
-@base_blueprint.route('/role_update', methods=['POST'])
+@base_blueprint.route('/role/update', methods=['POST'])
 def role_update():
     """
     更新角色
@@ -118,10 +119,11 @@ def role_update():
     role.seq = request.form.get('data.seq')
     role.update_time = datetime.now()
     db.session.add(role)
-    return jsonify({'success': True})
+    # return jsonify({'success': True})
+    return jsonify({'code': 200, 'msg': 'OK'})
 
 
-@base_blueprint.route('/role_save', methods=['POST'])
+@base_blueprint.route('/role/save', methods=['POST'])
 def role_save():
     """
     新建角色
@@ -134,10 +136,11 @@ def role_save():
     role.seq = request.form.get('data.seq')
     current_user.roles.append(role)
     db.session.add(role)
-    return jsonify({'success': True})
+    # return jsonify({'success': True})
+    return jsonify({'code': 200, 'msg': 'OK'})
 
 
-@base_blueprint.route('role_delete', methods=['POST'])
+@base_blueprint.route('/role/delete', methods=['POST'])
 def role_delete():
     """
     删除角色
@@ -146,4 +149,5 @@ def role_delete():
     role = db.session.query(Role).get(request.form.get('id', ''))
     if role:
         db.session.delete(role)
-    return jsonify({'success': True})
+    # return jsonify({'success': True})
+    return jsonify({'code': 200, 'msg': 'OK'})
